@@ -1,0 +1,386 @@
+header{
+  background-color: #659DBD;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 25px 0 black;
+    z-index:1;
+  
+}
+
+h1{
+  color: white;
+}
+
+header .img1 {
+    height: 70px;
+    padding-left: 30px;
+  padding-right: 30px;
+}
+
+header .img2 {
+  margin-left: 40px;
+    height: 40px;
+    padding-left: 30px;
+  padding-right: 30px;
+}
+
+
+
+header * {
+    display: inline;
+}
+
+.nav--top > ul {
+    font-family: Arial, Sans-Serif;
+    font-size: 22px;
+    margin: 0;
+    padding: 0;
+    padding-left: 40px;
+    list-style: none;
+    text-align: center;
+}
+
+.nav--top > ul > li {
+    line-height: normal;
+    padding: 0;
+  padding-left: 40px;
+    margin: 0 0 1rem;
+}
+
+@media (min-width: 52em) {
+    .nav--top > ul > li {
+        margin: 0 0 0 .75rem;
+        display: inline-block;
+    }
+}
+
+.nav--top > ul > li a {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    box-shadow: 0 0 1px transparent;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    padding: 0 0 .15rem;
+    border-bottom: 0px solid white;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+}
+
+.nav--top > ul > li a:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 100%;
+    bottom: -2px;
+    background: red;
+    height: 2px;
+    -webkit-transition-property: right;
+    transition-property: right;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+.nav--top > ul > li a:hover:before,
+.nav--top > ul > li a:focus:before,
+.nav--top > ul > li a:active:before,
+.nav--top > ul > li.current_page_item a:before {
+    right: 0
+}
+
+.nav--top > ul > li a:hover,
+.nav--top > ul > li a:focus,
+.nav--top > ul > li a:active,
+.nav--top > ul > li.current_page_item a {
+    border-bottom: 2px solid #fff;
+    color: red;
+}
+
+@keyframes animate{
+  0%{
+    background-position: left 0px top 10px;
+  
+  }
+  40%{
+    background-position: left 800px top 10px;
+  }
+
+}
+
+.userId{
+      align-items: left;
+      color: white;
+  }
+body {
+    font-size: 100%;
+    background-color: #659DBD;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;
+}
+
+.Title{
+  width: 30%;
+  color: black;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border-bottom: none;
+  padding: 20px;
+}
+
+.header {
+  width: 30%;
+  margin: 10px auto 0px;
+  color: BLACK;
+  background: white;
+  text-align: center;
+  border: 1px solid #B0C4DE;
+  border-bottom: none;
+  border-radius: 10px 10px 0px 0px;
+  padding: 20px;
+}
+
+.header1 {
+  width: 30%;
+  margin: 20px auto 0px;
+  color: BLACK;
+  background: white;
+  text-align: center;
+  border: 1px solid #B0C4DE;
+  border-bottom: none;
+  border-radius: 10px 10px 0px 0px;
+  padding: 20px;
+}
+
+
+.content{
+  width: 30%;
+  margin: 0px auto;
+  padding: 20px;
+  border: 1px solid #B0C4DE;
+  background: #4056a1;
+  color: white;
+}
+
+.content1{
+  width: 30%;
+  margin: 0px auto;
+  padding: 20px;
+  border: 1px solid #B0C4DE;
+  background: #4056a1;
+  color: white;
+  text-align: center;
+}
+
+
+.form1{
+  width: 30%;
+  margin: 0px auto;
+  padding: 20px;
+  border: 1px solid #B0C4DE;
+  background: #EFE2BA;
+  border-radius: 0px 0px 10px 10px;  
+}
+
+.form2{
+  width: 30%;
+  text-align: ;
+  margin: 0px auto;
+  padding: 20px;
+  border: 1px solid #B0C4DE;
+  background: #EFE2BA;
+  border-radius: 0px 0px 10px 10px;
+  text-align: center;
+}
+
+.input-group {
+  margin: 10px 0px 10px 0px;
+}
+.input-group label {
+  display: block;
+  text-align: left;
+  margin: 3px;
+}
+.input-group input {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.input-group input select {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.input-group2 input {
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin-top: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.input-group select {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.btn {
+  padding: 10px;
+  font-size: 15px;
+  color: white;
+  background: #5F9EA0;
+  border: none;
+  border-radius: 5px;
+}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.error {
+  width: 92%; 
+  margin: 0px auto; 
+  padding: 10px; 
+  border: 1px solid #a94442; 
+  color: #a94442; 
+  background: #f2dede; 
+  border-radius: 5px; 
+  text-align: left;
+}
+.success {
+  color: #3c763d; 
+  background: #dff0d8; 
+  border: 1px solid #3c763d;
+  margin-bottom: 20px;
+}
+
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 90%;
+  text-align: center;
+  margin: 15px auto;
+  background-color: lightblue;
+}
+
+table td, #timetable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color:darkcyan;
+  color: white;
+}
+
+.custinfo{
+  text-align: center;
+  color: gold;
+}
+
+.bookinfo{
+  text-align: center;
+  color: gold;
+  margin-top: 20px;
+}
+.content2{
+  text-align: center;
+  color: gold;
+}

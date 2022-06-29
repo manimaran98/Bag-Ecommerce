@@ -1,0 +1,206 @@
+body{
+			margin: 0px;
+			border:0px;	
+		}
+
+		img{
+			margin-top: 5px;
+		}
+		h2,h1{
+			text-align: center;
+		}
+		#header{
+			width: 100%;
+      overflow: hidden;
+			height: 123px;
+			background: #2f496e;
+			color: black;
+      position: fixed;
+      top: 0;
+		}
+	.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 250px;
+  background: #2988bc;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  top: 123px;
+}
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 8px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+  background-color: darkslateblue;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  color: white;
+}
+
+		#adminlogo{
+			background: white;
+			border-radius: 50px;
+		}
+		ul li{
+			padding: 20px;
+			border-bottom: 2px solid lightblue;
+			list-style-type: none;
+		}
+		ul li:hover{
+			background: #C7D3D4FF;
+      color: black;
+			
+		}
+		
+		table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+  text-align: center;
+  margin-top: 20px;
+  margin-left:350px;
+  background-color: lightblue;
+  margin-bottom: 50px;
+}
+
+table td,th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color:darkcyan;
+  color: white;
+}
+.content2{
+  text-align: center;
+  color: gold;
+}
+
+.input-group2 input {
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin-top: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20px;
+  display: flex;
+}
+.input-group3{
+  margin-top: 150px;
+}
+
+.input-group3 input {
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20px;
+  display: block;
+}
+
+
+#uname[type=text], #pword[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  width: 49%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+
+.input-group {
+  margin: 10px 0px 10px 0px;
+}
+.input-group label {
+  display: block;
+  text-align: left;
+  margin: 3px;
+}
+.input-group input {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.input-group input select {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.input-group select {
+  height: 30px;
+  width: 93%;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.form1{
+  width: 30%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #B0C4DE;
+  border-radius: 10px 10px 10px 10px;  
+}
+
+
+	
