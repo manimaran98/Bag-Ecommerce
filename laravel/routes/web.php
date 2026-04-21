@@ -25,9 +25,9 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
-    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:5,1');
+    Route::post('/login', [LoginController::class, 'store'])->middleware(['throttle:login', 'honeypot', 'recaptcha.form']);
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store'])->middleware('throttle:5,1');
+    Route::post('/register', [RegisterController::class, 'store'])->middleware(['throttle:register', 'honeypot', 'recaptcha.form']);
 });
 
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
@@ -41,15 +41,15 @@ Route::post('/support-requests', [SupportRequestController::class, 'store'])
     ->name('support-requests.store');
 
 // Public — guests can browse without logging in
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{stock}', [ProductController::class, 'show'])->whereNumber('stock')->name('products.show');
+Route::get('/products', [ProductController::class, 'index'])->middleware('throttle:browse')->name('products.index');
+Route::get('/products/{stock}', [ProductController::class, 'show'])->whereNumber('stock')->middleware('throttle:browse')->name('products.show');
 
 // Auth required — cart, checkout, orders, receipts
 Route::middleware('auth')->group(function () {
     Route::post('/cart/add/{stock}', [CartController::class, 'store'])->whereNumber('stock')->name('cart.add');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/remove/{item}', [CartController::class, 'destroy'])->where('item', '[0-9]+')->name('cart.remove');
-    Route::post('/checkout/stripe', [CheckoutController::class, 'stripe'])->middleware('throttle:10,1')->name('checkout.stripe');
+    Route::post('/checkout/stripe', [CheckoutController::class, 'stripe'])->middleware('throttle:checkout')->name('checkout.stripe');
     Route::get('/stripe/return', [CheckoutController::class, 'return'])->name('stripe.return');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/invoice/{purchase}', [InvoiceController::class, 'show'])->where('purchase', '[A-Za-z0-9\-]+')->name('invoice.show');

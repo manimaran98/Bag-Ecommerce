@@ -12,8 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'captcha' => \App\Http\Middleware\VerifyCaptchaToken::class,
+            'admin'           => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'captcha'         => \App\Http\Middleware\VerifyCaptchaToken::class,
+            'recaptcha.form'  => \App\Http\Middleware\VerifyRecaptchaForm::class,
+            'honeypot'        => \App\Http\Middleware\CheckHoneypot::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

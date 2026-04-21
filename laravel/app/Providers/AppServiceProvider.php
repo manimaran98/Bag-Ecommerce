@@ -69,5 +69,21 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('support', fn (Request $request) => Limit::perMinute((int) config('ai_chat.throttle.support_per_minute', 5))
             ->by('support-ip-'.$request->ip()));
+
+        // 5 login attempts per minute per IP, then locked for 1 minute.
+        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)
+            ->by('login-ip-'.$request->ip()));
+
+        // 10 registration attempts per hour per IP to block account-farming bots.
+        RateLimiter::for('register', fn (Request $request) => Limit::perHour(10)
+            ->by('register-ip-'.$request->ip()));
+
+        // 10 checkout attempts per minute per authenticated user.
+        RateLimiter::for('checkout', fn (Request $request) => Limit::perMinute(10)
+            ->by('checkout-user-'.($request->user()?->id ?? $request->ip())));
+
+        // 30 product search/browse requests per minute per IP (generous for legit browsing).
+        RateLimiter::for('browse', fn (Request $request) => Limit::perMinute(30)
+            ->by('browse-ip-'.$request->ip()));
     }
 }
