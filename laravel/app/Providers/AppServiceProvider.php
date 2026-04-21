@@ -8,8 +8,10 @@ use App\Services\Chat\GeminiChatProvider;
 use App\Services\Chat\GroqChatProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use App\Hashing\Sha256Hasher;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -40,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Hash::extend('sha256', function (array $config = []): Sha256Hasher {
+            return new Sha256Hasher;
+        });
+
         Paginator::useBootstrapFive();
 
         Gate::policy(Purchase::class, PurchasePolicy::class);

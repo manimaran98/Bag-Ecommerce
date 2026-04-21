@@ -10,13 +10,26 @@ use Phinx\Seed\AbstractSeed;
  */
 final class DevDataSeeder extends AbstractSeed
 {
+    /**
+     * Salted SHA-256 (s256$…) with fixed all-zero salt for reproducible demo hashes (matches app hasher format).
+     */
+    private function saltedSha256Dev(string $plainPassword): string
+    {
+        $salt = str_repeat("\0", 32);
+
+        return 's256$'.bin2hex($salt).'$'.hash('sha256', $salt.$plainPassword);
+    }
+
     public function run(): void
     {
+        $pw12345 = $this->saltedSha256Dev('12345');
+        $pwAbc123 = $this->saltedSha256Dev('abc123');
+
         $this->table('users')->insert([
             [
                 'id' => 1,
                 'username' => 'admin',
-                'password' => '827ccb0eea8a706c4c34a16891f84e7b',
+                'password' => $pw12345,
                 'name' => 'admin',
                 'address' => '64 LUN Perusahaan Keledang 1 Taman Perindustrian Chandan Raya 31450 Menglembu Perak Malaysia',
                 'contact' => '0162153958',
@@ -24,7 +37,7 @@ final class DevDataSeeder extends AbstractSeed
             [
                 'id' => 2,
                 'username' => 'ahmad123',
-                'password' => '827ccb0eea8a706c4c34a16891f84e7b',
+                'password' => $pw12345,
                 'name' => 'Ahmad',
                 'address' => '2 Oversea Chinese Bank Corp Jln Ibrahim 80000 Johor 80000 Malaysia Johor 80000 Malaysia',
                 'contact' => '0123456789',
@@ -32,7 +45,7 @@ final class DevDataSeeder extends AbstractSeed
             [
                 'id' => 20,
                 'username' => 'Siti99',
-                'password' => '900150983cd24fb0d6963f7d28e17f72',
+                'password' => $pwAbc123,
                 'name' => 'Siti Salfa',
                 'address' => 'Blok 81 Jln Tembusu Perjiranan 9 81700 Pasir Gudang Johor Pasir Gudang Johor 81700 Malaysia',
                 'contact' => '0198765432',
@@ -40,7 +53,7 @@ final class DevDataSeeder extends AbstractSeed
             [
                 'id' => 21,
                 'username' => 'sameul98',
-                'password' => '827ccb0eea8a706c4c34a16891f84e7b',
+                'password' => $pw12345,
                 'name' => 'Samuel Jackson',
                 'address' => '61B Jln Semeliang(Pekan Baru Kkn) 06300 Kuala Nerang Kedah Kuala Nerang Kedah 06300 Malaysia',
                 'contact' => '0121555525',
@@ -48,7 +61,7 @@ final class DevDataSeeder extends AbstractSeed
             [
                 'id' => 22,
                 'username' => 'chong98',
-                'password' => 'e2fc714c4727ee9395f324cd2e7f331f',
+                'password' => $pw12345,
                 'name' => 'Lee Chong Wei',
                 'address' => '30 Jln 10/34A Kepong Entrepreneurs Park 52100 Wilayah Persekutuan 52100 Malaysia 52100 Malaysia',
                 'contact' => '0111155574 ',

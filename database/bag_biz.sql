@@ -207,11 +207,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `name`, `address`, `contact`) VALUES
-(1, 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 'admin', '64 LUN Perusahaan Keledang 1 Taman Perindustrian Chandan Raya 31450 Menglembu Perak Malaysia', '0162153958'),
-(2, 'ahmad123', '827ccb0eea8a706c4c34a16891f84e7b', 'Ahmad', '2 Oversea Chinese Bank Corp Jln Ibrahim 80000 Johor 80000 Malaysia Johor 80000 Malaysia', '0123456789'),
-(20, 'Siti99', '900150983cd24fb0d6963f7d28e17f72', 'Siti Salfa', 'Blok 81 Jln Tembusu Perjiranan 9 81700 Pasir Gudang Johor Pasir Gudang Johor 81700 Malaysia', '0198765432'),
-(21, 'sameul98', '827ccb0eea8a706c4c34a16891f84e7b', 'Samuel Jackson', '61B Jln Semeliang(Pekan Baru Kkn) 06300 Kuala Nerang Kedah Kuala Nerang Kedah 06300 Malaysia', '0121555525'),
-(22, 'chong98', 'e2fc714c4727ee9395f324cd2e7f331f', 'Lee Chong Wei', '30 Jln 10/34A Kepong Entrepreneurs Park 52100 Wilayah Persekutuan 52100 Malaysia 52100 Malaysia', '0111155574 ');
+(1, 'admin', 's256$0000000000000000000000000000000000000000000000000000000000000000$c76d6053768fb7261cd226dc282da9a49cf4ea5f5d5d8ec967dfaf96bc22c4d5', 'admin', '64 LUN Perusahaan Keledang 1 Taman Perindustrian Chandan Raya 31450 Menglembu Perak Malaysia', '0162153958'),
+(2, 'ahmad123', 's256$0000000000000000000000000000000000000000000000000000000000000000$c76d6053768fb7261cd226dc282da9a49cf4ea5f5d5d8ec967dfaf96bc22c4d5', 'Ahmad', '2 Oversea Chinese Bank Corp Jln Ibrahim 80000 Johor 80000 Malaysia Johor 80000 Malaysia', '0123456789'),
+(20, 'Siti99', 's256$0000000000000000000000000000000000000000000000000000000000000000$88456f1d0a87e69dca2d8a9d03d4a19d6ffa8ed133c5fd3da6bf71b67eade8b7', 'Siti Salfa', 'Blok 81 Jln Tembusu Perjiranan 9 81700 Pasir Gudang Johor Pasir Gudang Johor 81700 Malaysia', '0198765432'),
+(21, 'sameul98', 's256$0000000000000000000000000000000000000000000000000000000000000000$c76d6053768fb7261cd226dc282da9a49cf4ea5f5d5d8ec967dfaf96bc22c4d5', 'Samuel Jackson', '61B Jln Semeliang(Pekan Baru Kkn) 06300 Kuala Nerang Kedah Kuala Nerang Kedah 06300 Malaysia', '0121555525'),
+(22, 'chong98', 's256$0000000000000000000000000000000000000000000000000000000000000000$c76d6053768fb7261cd226dc282da9a49cf4ea5f5d5d8ec967dfaf96bc22c4d5', 'Lee Chong Wei', '30 Jln 10/34A Kepong Entrepreneurs Park 52100 Wilayah Persekutuan 52100 Malaysia 52100 Malaysia', '0111155574 ');
 
 --
 -- Indexes for dumped tables

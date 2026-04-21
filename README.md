@@ -27,7 +27,7 @@ Optional: **`BAG_RECOMMENDATION_LIMIT`** (default `8`) in **`laravel/.env`** con
 - **Help desk tickets**: customers can escalate from the chat widget (**`POST /support-requests`**, stricter throttle + CAPTCHA). Admins open **Help desk** in the sidebar to list and resolve tickets.
 - **CAPTCHA**: configure **Cloudflare Turnstile** (`TURNSTILE_*`) or **reCAPTCHA v3** (`RECAPTCHA_*`) and **`AI_CAPTCHA_DRIVER`**. Without site/secret keys, verification is skipped (development only).
 
-**Admin:** after seeding, user **`admin`** / **`12345`** (MD5 in seed) — log in once to re-hash to bcrypt; change the password in production.
+**Admin:** after seeding, user **`admin`** / **`12345`** (demo seed uses salted SHA-256); change the password in production.
 
 ## Docker
 
@@ -52,7 +52,7 @@ MySQL is exposed on **localhost:33060** by default. RabbitMQ is optional for fut
 
 ## Security notes
 
-- Passwords: bcrypt; legacy **MD5** in the database is upgraded on successful login.
+- Passwords: **salted SHA-256** only (random salt per password, stored as `s256$…`).
 - Admin routes use middleware + `users.username === BAG_ADMIN_USER`.
 - Receipt download: admin or owning customer (`GET /download/receipt?payment_resit=...`).
 - Uploads: random filenames; allowed types for product images and receipts (images + PDF for receipts).
