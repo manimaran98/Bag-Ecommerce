@@ -12,7 +12,7 @@
                         <img src="{{ asset('assets/stockImg/'.$product->stock_img) }}" class="w-100 h-100 object-fit-cover" style="min-height: 280px;" alt="">
                     </div>
                     <div class="col-md-6">
-                        <div class="card-body p-4">
+                        <div class="card-body p-4 p-lg-5">
                             <h1 class="h3 mb-3">{{ $product->stock_name }}</h1>
                             <p class="text-secondary mb-2"><strong>Brand:</strong> {{ $product->stock_brand }}</p>
                             <p class="text-secondary mb-2"><strong>Category:</strong> {{ $product->stock_category }}</p>
@@ -28,10 +28,12 @@
                                             <label class="form-label" for="quantity">Quantity</label>
                                             <input class="form-control" type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" required>
                                         </div>
-                                        <button type="submit" class="btn btn-danger w-100">Add to cart</button>
+                                        <button type="submit" class="btn btn-primary w-100 py-2">
+                                            <i class="bi bi-bag-plus me-1" aria-hidden="true"></i>Add to cart
+                                        </button>
                                     </form>
                                 @else
-                                    <a href="{{ route('login') }}" class="btn btn-danger w-100">Login to purchase</a>
+                                    <a href="{{ route('login') }}" class="btn btn-primary w-100 py-2">Login to purchase</a>
                                     <p class="small text-muted text-center mt-2">
                                         Don't have an account? <a href="{{ route('register') }}">Sign up</a>
                                     </p>

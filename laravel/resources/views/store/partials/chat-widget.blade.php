@@ -9,7 +9,9 @@
 @endphp
 
 <div id="hm-chat-root" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
-    <button type="button" id="hm-chat-toggle" class="btn btn-primary rounded-circle shadow" style="width: 56px; height: 56px;" aria-label="Open chat" title="Chat">💬</button>
+    <button type="button" id="hm-chat-toggle" class="btn btn-primary rounded-circle shadow d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;" aria-label="Open chat" title="Chat">
+        <i class="bi bi-chat-dots fs-4" aria-hidden="true"></i>
+    </button>
     <div id="hm-chat-panel" class="card shadow-lg border-0 d-none" style="width: min(100vw - 2rem, 380px); max-height: 85vh;">
         <div class="card-header d-flex justify-content-between align-items-center py-2">
             <span class="fw-semibold small">{{ config('app.name') }} — Chat</span>
