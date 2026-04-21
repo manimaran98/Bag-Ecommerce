@@ -1,2 +1,0 @@
-# Deny direct HTTP access to backend PHP (Apache only).
-Require all denied

@@ -1,6 +1,7 @@
 .DS_Store
 Thumbs.db
 *.log
+/vendor/
 .env
 .env.*
 !.env.example
@@ -8,3 +9,5 @@ Thumbs.db
 # User-uploaded payment receipts (do not commit real customer data)
 assets/receipt/*
 !assets/receipt/.gitkeep
+public/assets/receipt/*
+!public/assets/receipt/.gitkeep

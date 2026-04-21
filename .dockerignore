@@ -1,0 +1,11 @@
+.git
+.gitignore
+*.md
+.env
+.env.*
+!.env.example
+Thumbs.db
+.DS_Store
+*.log
+vendor
+laravel/vendor

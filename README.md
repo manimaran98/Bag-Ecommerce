@@ -1,79 +1,62 @@
-# Bag Ecommerce (PHP)
+# HalenMiaga (Laravel)
 
-University-style bag shop: customer storefront, shopping cart, bank-transfer checkout with receipt upload, and an admin area for users, inventory, suppliers, orders, and purchase validation.
+**HalenMiaga** is a bag shop with a customer storefront (products, cart, **Stripe Checkout**), order history, invoices, **personalized recommendations** (purchase co-occurrence + logged category filters + popularity fallback), and an **admin** area (users, stock, suppliers, deliveries, purchase validation, sales report).
 
-## Architecture: backend vs frontend
-
-This repo is organized like a small **backend + frontend** split (without a separate JS build step):
-
-| Layer | Path | Role |
-|--------|------|------|
-| **Backend** | `backend/` | Not a public API: PHP that boots the app, connects to MySQL, enforces auth, and runs all **request handlers** (forms, cart, checkout, admin actions). |
-| **Frontend** | `frontend/` | **Views only**: `frontend/views/` templates and `frontend/View.php` (`bag_view()`). HTML presentation is separated from `backend/Http/handlers.php`. |
-| **Public assets** | `assets/` | Static CSS/images/uploads at the document root (URLs stay `assets/...`). |
-| **Entry scripts** | `*.php` at repo root | Thin “controllers”: `require server.php` (backend), then `bag_view(...)` for pages that use templates. Legacy admin/shop pages still inline HTML; migrate them to `frontend/views/pages/` over time. |
-
-- **`server.php`** → loads **`backend/bootstrap.php`** (env, session, DB, auth guard, then **`backend/Http/handlers.php`**).
-- **`backend/.htaccess`** (Apache) denies direct browser access to the backend folder; PHP still loads it via `require`.
-
-### Example flow
-
-1. Browser requests `index.php?logout=1` or POST to `login.php`.
-2. **`server.php`** runs the backend: handlers may redirect, update DB, set flash errors, etc.
-3. **`index.php`** / **`login.php`** then call **`bag_view('pages/...')`** to render HTML only.
-
-## Project layout (paths)
-
-| Path | Purpose |
-|------|---------|
-| `backend/bootstrap.php` | Session, DB, load Support + route guard + handlers |
-| `backend/Config/database.php` | DB settings (`BAG_DB_*` / `.env`) |
-| `backend/Support/` | `auth.php`, `helpers.php` |
-| `backend/Http/handlers.php` | All POST/GET action logic (the former monolithic `server.php` body) |
-| `frontend/View.php` | `bag_view($path, $data)` |
-| `frontend/views/pages/` | Page templates (`home`, `login`, `register`, …) |
-| `frontend/views/partials/` | Reusable fragments (e.g. customer nav) |
-| `assets/` | Public static files + upload dirs |
-| `database/bag_biz.sql` | Schema and sample data |
-
-PHP entry scripts live in the **project root**, which should be the web server document root (e.g. XAMPP `htdocs/Bag-Ecommerce`).
+The application is the **`laravel/`** Laravel 11 app. The MySQL schema is managed with **Phinx** at the repo root (`database/migrations/`); Laravel uses the same database (typically **`bag_biz`**) for Eloquent. Static assets and uploads live under **`public/assets/`** and are exposed via a symlink from **`laravel/public/assets`**.
 
 ## Requirements
 
-- PHP **7.4+** (8.x recommended) with `mysqli`, `fileinfo` (for safer downloads), sessions enabled  
-- MySQL or MariaDB  
+- PHP **8.2+** (Docker image includes extensions for MySQL, GD, etc.)
+- Composer
+- MySQL 8
 
-## Installation
+## Local setup
 
-1. **Create the database** and import the schema:
-   ```bash
-   mysql -u root -p -e "CREATE DATABASE bag_biz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-   mysql -u root -p bag_biz < database/bag_biz.sql
-   ```
-2. **Existing databases** created before this repo update: widen the password column so bcrypt hashes fit:
-   ```sql
-   ALTER TABLE users MODIFY password VARCHAR(255) NOT NULL;
-   ```
-3. **Configuration**: copy `.env.example` to `.env` and set database credentials (or export `BAG_DB_HOST`, `BAG_DB_USER`, `BAG_DB_PASS`, `BAG_DB_NAME`). Defaults match local XAMPP (`root` / empty password / `bag_biz`).
-4. **Admin account**: default seed user is `admin` with password **`12345`** (MD5 in old dumps). Log in once; the app will **re-hash** the password to bcrypt automatically. Change the password immediately in production.
-5. **Admin username**: optional env `BAG_ADMIN_USER` (default `admin`) must match the `users.username` row that should receive the admin dashboard after login.
+1. **Root:** `composer install` (Phinx only).
+2. **Laravel:** `cd laravel && composer install`.
+3. Create database `bag_biz` (utf8mb4), copy **`laravel/.env.example`** to **`laravel/.env`**, set **`DB_*`**, **`APP_URL`**, **`BAG_ADMIN_USER`** (must match `users.username` for the admin account), and **`STRIPE_SECRET_KEY`** (test key for Stripe Checkout).
+4. Run Phinx: `vendor/bin/phinx migrate` from the repo root.
+5. Optional seed: `vendor/bin/phinx seed:run -s DevDataSeeder`.
+6. Laravel framework tables + app tables (e.g. `user_search_logs` for recommendations): `cd laravel && php artisan migrate`.
 
-## Security improvements (this fork)
+Optional: **`BAG_RECOMMENDATION_LIMIT`** (default `8`) in **`laravel/.env`** controls how many suggested products appear on home, product list, and product detail.
 
-- **Passwords**: `password_hash` / `password_verify`; legacy **MD5** in the database is verified once and upgraded to bcrypt on successful login.
-- **Authorization**: Admin-only scripts (dashboard, CRUD, deletes) require an authenticated **admin** user. Customer accounts receive HTTP 403 if they open admin URLs.
-- **SQL injection**: High-risk updates and several deletes use **prepared statements** or typed IDs; remaining dynamic SQL uses escaped strings where applicable.
-- **Uploads**: Product images and payment receipts are stored with **random filenames** and **allowed extensions** (images: jpg/png/gif/webp; receipts also **pdf**).
-- **Downloads**: `download.php` resolves files under `assets/receipt/` only and allows **admin** or the **owning customer** (matching purchase row).
-- **Sessions**: HTTP-only session cookies, `SameSite=Lax`.
-- **Receipts**: `assets/receipt/*` is gitignored except `.gitkeep`; do not commit real customer uploads.
+### Storefront AI chat and help desk
 
-## Development notes
+- **Floating chat** on the storefront: **`POST /chat`** (rate-limited + CAPTCHA when configured). Set **`GEMINI_API_KEY`** (and for free tier **`GROQ_API_KEY`**) and related vars in **`laravel/.env`** — see **`laravel/.env.example`**. With **`AI_CHAT_TIER=free`**, the app uses **`AI_CHAT_PRIMARY_WHEN_FREE`** (`groq` or `gemini`) and can fall back to the other provider on errors when **`AI_CHAT_FALLBACK_ENABLED=true`**. With **`AI_CHAT_TIER=paid`**, only Gemini is used.
+- **Help desk tickets**: customers can escalate from the chat widget (**`POST /support-requests`**, stricter throttle + CAPTCHA). Admins open **Help desk** in the sidebar to list and resolve tickets.
+- **CAPTCHA**: configure **Cloudflare Turnstile** (`TURNSTILE_*`) or **reCAPTCHA v3** (`RECAPTCHA_*`) and **`AI_CAPTCHA_DRIVER`**. Without site/secret keys, verification is skipped (development only).
 
-- Login URL is **`login.php`** (lowercase) for compatibility with Linux hosting.
-- After changing code, clear browser cookies if session behavior seems stuck.
-- To add a new page: create `frontend/views/pages/yourpage.php`, add a root `yourpage.php` that `require`s `server.php` + `frontend/View.php`, then `bag_view('pages/yourpage', $data)`.
+**Admin:** after seeding, user **`admin`** / **`12345`** (MD5 in seed) — log in once to re-hash to bcrypt; change the password in production.
+
+## Docker
+
+Single HTTP entry point: **nginx** → **`laravel/public`** (default **http://localhost:8080**).
+
+```bash
+docker compose up -d --build
+```
+
+The **app** container runs Phinx, installs Composer deps, configures **`laravel/.env`** from environment variables, runs **`php artisan migrate`**, then **php-fpm**. Set **`LARAVEL_APP_URL`** (e.g. `http://localhost:8080`) so **`APP_URL`** and Stripe redirect URLs match.
+
+MySQL is exposed on **localhost:33060** by default. RabbitMQ is optional for future workers.
+
+## Project layout
+
+| Path | Role |
+|------|------|
+| `laravel/` | Application (routes, controllers, Blade, services). |
+| `public/assets/` | CSS, images; `stockImg/` and `receipt/` uploads (gitignored where appropriate). |
+| `database/migrations/` | Phinx schema (source of truth for tables). |
+| `phinx.php` | Phinx config (`BAG_DB_*`). |
+
+## Security notes
+
+- Passwords: bcrypt; legacy **MD5** in the database is upgraded on successful login.
+- Admin routes use middleware + `users.username === BAG_ADMIN_USER`.
+- Receipt download: admin or owning customer (`GET /download/receipt?payment_resit=...`).
+- Uploads: random filenames; allowed types for product images and receipts (images + PDF for receipts).
 
 ## License
 
-Educational / project use; adapt as needed for your course or deployment.
+Educational / project use.
