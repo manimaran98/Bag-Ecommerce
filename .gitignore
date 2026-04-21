@@ -6,5 +6,5 @@ Thumbs.db
 !.env.example
 
 # User-uploaded payment receipts (do not commit real customer data)
-asset/receipt/*
-!asset/receipt/.gitkeep
+assets/receipt/*
+!assets/receipt/.gitkeep
