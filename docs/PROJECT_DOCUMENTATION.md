@@ -155,17 +155,17 @@ Admin access: user must be authenticated and `users.username` must match `BAG_AD
 
 ```mermaid
 erDiagram
-  users ||--o{ cart_item : "id"
-  users ||--o{ purchase : "id"
-  users ||--o{ purchase_item : "id"
-  users ||--o{ delivery : "id"
-  users ||--o{ user_search_logs : "user_id"
-  users ||--o{ support_requests : "user_id optional"
+  users ||--o{ cart_item : links
+  users ||--o{ purchase : links
+  users ||--o{ purchase_item : links
+  users ||--o{ delivery : links
+  users ||--o{ user_search_logs : links
+  users ||--o{ support_requests : links
 
-  purchase ||--|{ purchase_item : "purchase_id"
-  purchase ||--o{ delivery : "purchase_id"
+  purchase ||--|{ purchase_item : contains
+  purchase ||--o{ delivery : ships
 
-  stock_inventory ||--o{ purchase_item : "stock_id"
+  stock_inventory ||--o{ purchase_item : line
 
   suppliers {
     int suppliers_id PK
@@ -195,7 +195,7 @@ erDiagram
 
   cart_item {
     int cart_id PK
-    int id FK users
+    int id FK
     string item_id
     string item_img
     string item_name
@@ -205,30 +205,30 @@ erDiagram
 
   purchase {
     string purchase_id PK
-    int id FK users
+    int id FK
     string total_price
-    date purchase_date
-    string payment_resit nullable
-    string stripe_checkout_session_id nullable
-    string stripe_payment_intent_id nullable
+    string purchase_date
+    string payment_resit
+    string stripe_checkout_session_id
+    string stripe_payment_intent_id
     string purchase_validation
   }
 
   purchase_item {
     int purchase_item_id PK
     string purchase_id FK
-    int id FK users
+    int id FK
     int stock_id FK
     string stock_img
     string stock_name
     int stock_quantity
     string stock_price
-    date purchase_date
+    string purchase_date
   }
 
   delivery {
     int delivery_id PK
-    int id FK users
+    int id FK
     string purchase_id FK
     string delivery_agent
     string delivery_status
@@ -237,22 +237,25 @@ erDiagram
   }
 
   user_search_logs {
-    bigint id PK
+    int id PK
     int user_id FK
-    string category_filter nullable
-    timestamp created_at
+    string category_filter
+    string created_at
   }
 
   support_requests {
-    bigint id PK
-    int user_id nullable FK
-    string guest_name nullable
-    string guest_email nullable
-    text body
+    int id PK
+    int user_id FK
+    string guest_name
+    string guest_email
+    string body
     string status
-    timestamps
+    string created_at
+    string updated_at
   }
 ```
+
+**GitHub / Mermaid note:** Entity fields are drawn in a simplified form. GitHub’s `erDiagram` parser does not accept extra words on one line (for example `FK users`, or `nullable` after a column name), so foreign keys are shown as a bare `FK` and optional columns are drawn like normal columns. Exact SQL types, nullability, and FK targets are listed in **section 4.3** below.
 
 **Note:** `suppliers` exists for admin/supplier management; there is **no FK** from `stock_inventory` to `suppliers` in the migrated schema (brand is denormalized on stock rows).
 
