@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessOrderCompletion;
 use App\Models\Purchase;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\URL;
-use Stripe\Checkout\Session;
+use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
 
 final class StripeCheckoutService
 {
     public function __construct(
         private CartService $cart,
-        private OrderCompletionService $orders
     ) {}
 
     public function isConfigured(): bool
@@ -48,7 +48,7 @@ final class StripeCheckoutService
         $successUrl = URL::route('stripe.return', [], true).'?session_id={CHECKOUT_SESSION_ID}';
         $cancelUrl = URL::route('cart.index', ['canceled' => 1], true);
 
-        $session = Session::create([
+        $session = StripeSession::create([
             'mode' => 'payment',
             'client_reference_id' => $paymentId,
             'line_items' => $pack['lines'],
@@ -87,7 +87,7 @@ final class StripeCheckoutService
         Stripe::setApiKey((string) config('services.stripe.secret'));
 
         try {
-            $checkoutSession = Session::retrieve($sessionId);
+            $checkoutSession = StripeSession::retrieve($sessionId);
         } catch (\Throwable) {
             return redirect()->route('cart.index')
                 ->with('error', 'Could not verify payment with Stripe.');
@@ -124,26 +124,16 @@ final class StripeCheckoutService
         $piId = is_string($pi) ? $pi : (is_object($pi) && isset($pi->id) ? (string) $pi->id : '');
 
         $itemDate = now()->format('Y-m-d');
-        try {
-            $ok = $this->orders->completeFromCart(
-                $user,
-                $paymentId,
-                $orderTotal,
-                $itemDate,
-                'Approved',
-                null,
-                $sessionId,
-                $piId
-            );
-        } catch (\RuntimeException $e) {
-            return redirect()->route('cart.index')
-                ->with('error', 'One or more items sold out before your order completed. Your payment will be refunded — contact support with payment ID: '.$paymentId);
-        }
 
-        if (! $ok) {
-            return redirect()->route('cart.index')
-                ->with('error', 'Could not save your order. Contact support with your payment ID: '.$paymentId);
-        }
+        ProcessOrderCompletion::dispatch(
+            $user,
+            $paymentId,
+            $orderTotal,
+            $itemDate,
+            'Approved',
+            $sessionId,
+            $piId
+        );
 
         return redirect()->route('orders.index', ['paid' => 1]);
     }

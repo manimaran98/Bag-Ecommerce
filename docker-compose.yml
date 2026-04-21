@@ -34,6 +34,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - bagnet
 
@@ -58,6 +60,40 @@ services:
     networks:
       - bagnet
 
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["php", "/var/www/html/laravel/artisan", "queue:work", "redis", "--sleep=3", "--tries=3", "--max-time=3600"]
+    volumes:
+      - .:/var/www/html
+    environment:
+      BAG_DB_HOST: mysql
+      BAG_DB_USER: ${MYSQL_USER:-bag}
+      BAG_DB_PASS: ${MYSQL_PASSWORD:-bag}
+      BAG_DB_NAME: ${MYSQL_DATABASE:-bag_biz}
+      LARAVEL_APP_URL: ${LARAVEL_APP_URL:-http://localhost:8080}
+      LARAVEL_DB_DATABASE: ${LARAVEL_DB_DATABASE:-bag_biz}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - bagnet
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bagnet
+
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     hostname: rabbitmq
@@ -78,4 +114,5 @@ networks:
 
 volumes:
   mysql_data:
+  redis_data:
   rabbitmq_data:

@@ -24,11 +24,25 @@
                 </tr>
             </thead>
             <tbody>
+                @php $hasStockIssue = false; @endphp
                 @forelse ($lines as $i => $line)
-                    @php $lineTotal = (int) $line->item_quantity * (float) $line->item_price; @endphp
-                    <tr>
+                    @php
+                        $lineTotal = (int) $line->item_quantity * (float) $line->item_price;
+                        $live = $liveQty[(int) $line->item_id] ?? 0;
+                        $soldOut = $live <= 0;
+                        $insufficient = !$soldOut && $live < (int) $line->item_quantity;
+                        if ($soldOut || $insufficient) $hasStockIssue = true;
+                    @endphp
+                    <tr class="{{ $soldOut || $insufficient ? 'table-warning' : '' }}">
                         <td>{{ $i + 1 }}</td>
-                        <td>{{ $line->item_name }}</td>
+                        <td>
+                            {{ $line->item_name }}
+                            @if ($soldOut)
+                                <span class="badge bg-danger ms-1">Sold out</span>
+                            @elseif ($insufficient)
+                                <span class="badge bg-warning text-dark ms-1">Only {{ $live }} left</span>
+                            @endif
+                        </td>
                         <td><img class="rounded border" width="120" height="80" style="object-fit:cover" src="{{ asset('assets/stockImg/'.$line->item_img) }}" alt=""></td>
                         <td>{{ $line->item_quantity }}</td>
                         <td>RM {{ $line->item_price }}</td>
@@ -60,11 +74,18 @@
     @if (count($lines) > 0)
         <div class="card border-0 bg-light mt-4">
             <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <p class="mb-0 small text-secondary">Pay with Stripe (test card <code>4242 4242 4242 4242</code>). Set <code>STRIPE_SECRET_KEY</code> in <code>.env</code>.</p>
-                <form method="post" action="{{ route('checkout.stripe') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-lg">Pay with card (Stripe)</button>
-                </form>
+                @if ($hasStockIssue)
+                    <p class="mb-0 small text-danger fw-semibold">
+                        One or more items in your cart are sold out or have reduced stock. Remove or update them before checking out.
+                    </p>
+                    <button type="button" class="btn btn-success btn-lg" disabled>Pay with card (Stripe)</button>
+                @else
+                    <p class="mb-0 small text-secondary">Pay with Stripe (test card <code>4242 4242 4242 4242</code>). Set <code>STRIPE_SECRET_KEY</code> in <code>.env</code>.</p>
+                    <form method="post" action="{{ route('checkout.stripe') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-lg">Pay with card (Stripe)</button>
+                    </form>
+                @endif
             </div>
         </div>
     @endif

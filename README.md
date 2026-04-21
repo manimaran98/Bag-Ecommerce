@@ -45,6 +45,7 @@ MySQL is exposed on **localhost:33060** by default. RabbitMQ is optional for fut
 
 | Path | Role |
 |------|------|
+| `docs/PROJECT_DOCUMENTATION.md` | **Architecture, modules, ER/sequence diagrams (Mermaid), and database reference.** |
 | `laravel/` | Application (routes, controllers, Blade, services). |
 | `public/assets/` | CSS, images; `stockImg/` and `receipt/` uploads (gitignored where appropriate). |
 | `database/migrations/` | Phinx schema (source of truth for tables). |

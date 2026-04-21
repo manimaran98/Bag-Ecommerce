@@ -6,6 +6,7 @@ use App\Models\StockInventory;
 use App\Models\User;
 use App\Models\UserSearchLog;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,6 +24,15 @@ final class ProductRecommendationService
             return collect();
         }
 
+        $cacheKey = "recommendations:user:{$user->id}";
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($user, $limit) {
+            return $this->compute($user, $limit);
+        });
+    }
+
+    private function compute(User $user, int $limit): Collection
+    {
         $purchasedIds = DB::table('purchase_item')
             ->where('id', $user->id)
             ->distinct()

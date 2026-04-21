@@ -27,9 +27,12 @@ if [ -n "${BAG_DB_HOST:-}" ]; then
 fi
 sed -i.bak "s/^# DB_DATABASE=.*/DB_DATABASE=${LARAVEL_DB}/" .env 2>/dev/null || true
 sed -i.bak "s/^DB_DATABASE=.*/DB_DATABASE=${LARAVEL_DB}/" .env 2>/dev/null || true
-sed -i.bak 's/^SESSION_DRIVER=.*/SESSION_DRIVER=file/' .env 2>/dev/null || true
-sed -i.bak 's/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=sync/' .env 2>/dev/null || true
-sed -i.bak 's/^CACHE_STORE=.*/CACHE_STORE=file/' .env 2>/dev/null || true
+REDIS_HOST_VAL="${REDIS_HOST:-redis}"
+sed -i.bak "s/^REDIS_HOST=.*/REDIS_HOST=${REDIS_HOST_VAL}/" .env 2>/dev/null || true
+sed -i.bak 's/^REDIS_CLIENT=.*/REDIS_CLIENT=phpredis/' .env 2>/dev/null || true
+sed -i.bak 's/^SESSION_DRIVER=.*/SESSION_DRIVER=redis/' .env 2>/dev/null || true
+sed -i.bak 's/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=redis/' .env 2>/dev/null || true
+sed -i.bak 's/^CACHE_STORE=.*/CACHE_STORE=redis/' .env 2>/dev/null || true
 if [ -n "${LARAVEL_APP_URL:-}" ]; then
   sed -i.bak "s|^APP_URL=.*|APP_URL=${LARAVEL_APP_URL}|" .env 2>/dev/null || true
 fi

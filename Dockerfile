@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zip \
         intl \
         opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Safer defaults for production-like containers

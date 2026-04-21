@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendSupportRequestNotification;
 use App\Models\SupportRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,19 +30,21 @@ class SupportRequestController extends Controller
         ]);
 
         if ($request->user()) {
-            SupportRequest::query()->create([
+            $ticket = SupportRequest::query()->create([
                 'user_id' => $request->user()->id,
                 'body' => $data['body'],
                 'status' => 'open',
             ]);
         } else {
-            SupportRequest::query()->create([
+            $ticket = SupportRequest::query()->create([
                 'guest_name' => $data['guest_name'] ?? null,
                 'guest_email' => $data['guest_email'] ?? null,
                 'body' => $data['body'],
                 'status' => 'open',
             ]);
         }
+
+        SendSupportRequestNotification::dispatch($ticket);
 
         return response()->json([
             'message' => 'We received your request. Our team will get back to you. Thank you.',

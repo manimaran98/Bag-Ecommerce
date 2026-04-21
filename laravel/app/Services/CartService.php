@@ -12,38 +12,49 @@ final class CartService
     /**
      * @return array{ok: bool, message?: string}
      */
+    /**
+     * @return array{ok: bool, message?: string}
+     */
     public function addLine(User $user, int $stockId, int $quantity): array
     {
-        $stock = StockInventory::query()->where('stock_id', $stockId)->first();
-        if (! $stock) {
-            return ['ok' => false, 'message' => 'Product not found.'];
-        }
-        if ($stock->stock_quantity <= 0) {
-            return ['ok' => false, 'message' => 'This item is out of stock.'];
-        }
-        if ($quantity < 1 || $quantity > $stock->stock_quantity) {
-            return ['ok' => false, 'message' => 'Invalid quantity for available stock.'];
-        }
+        return DB::transaction(function () use ($user, $stockId, $quantity) {
+            // Lock the stock row so concurrent add-to-cart requests serialize here
+            // rather than racing to the checkout lock and charging a card unnecessarily.
+            $stock = StockInventory::query()
+                ->where('stock_id', $stockId)
+                ->lockForUpdate()
+                ->first();
 
-        $exists = CartItem::query()
-            ->where('id', $user->id)
-            ->where('item_id', (string) $stockId)
-            ->exists();
+            if (! $stock) {
+                return ['ok' => false, 'message' => 'Product not found.'];
+            }
+            if ((int) $stock->stock_quantity <= 0) {
+                return ['ok' => false, 'message' => 'This item is out of stock.'];
+            }
+            if ($quantity < 1 || $quantity > (int) $stock->stock_quantity) {
+                return ['ok' => false, 'message' => 'Invalid quantity for available stock.'];
+            }
 
-        if ($exists) {
-            return ['ok' => false, 'message' => 'This product is already in your cart.'];
-        }
+            $exists = CartItem::query()
+                ->where('id', $user->id)
+                ->where('item_id', (string) $stockId)
+                ->exists();
 
-        CartItem::query()->create([
-            'id' => $user->id,
-            'item_id' => (string) $stockId,
-            'item_img' => $stock->stock_img,
-            'item_name' => $stock->stock_name,
-            'item_price' => (string) $stock->stock_price,
-            'item_quantity' => $quantity,
-        ]);
+            if ($exists) {
+                return ['ok' => false, 'message' => 'This product is already in your cart.'];
+            }
 
-        return ['ok' => true];
+            CartItem::query()->create([
+                'id' => $user->id,
+                'item_id' => (string) $stockId,
+                'item_img' => $stock->stock_img,
+                'item_name' => $stock->stock_name,
+                'item_price' => (string) $stock->stock_price,
+                'item_quantity' => $quantity,
+            ]);
+
+            return ['ok' => true];
+        });
     }
 
     public function removeLine(User $user, string $itemId): void

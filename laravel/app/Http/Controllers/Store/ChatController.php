@@ -30,7 +30,7 @@ class ChatController extends Controller
         $history[] = ['role' => 'user', 'content' => $data['message']];
         $history = array_slice($history, -40);
 
-        $result = $ai->reply($history);
+        $result = $ai->reply($history, $request->user());
 
         if (! $result->ok || $result->text === null) {
             return response()->json([

@@ -7,6 +7,7 @@ use App\Models\StockInventory;
 use App\Services\AdminAssetService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 final class StockController extends Controller
@@ -62,6 +63,8 @@ final class StockController extends Controller
             'stock_price' => $data['itemPrice'],
         ]);
 
+        Cache::forget('ai_chat:system_prompt');
+
         return redirect()->route('admin.stock.index')->with('status', 'Item saved.');
     }
 
@@ -105,6 +108,8 @@ final class StockController extends Controller
 
         $stock->save();
 
+        Cache::forget('ai_chat:system_prompt');
+
         return redirect()->route('admin.stock.index')->with('status', 'Stock updated.');
     }
 
@@ -112,6 +117,8 @@ final class StockController extends Controller
     {
         $this->assets->deleteStockImageFile($stock->stock_img);
         $stock->delete();
+
+        Cache::forget('ai_chat:system_prompt');
 
         return redirect()->route('admin.stock.index')->with('status', 'Stock deleted.');
     }

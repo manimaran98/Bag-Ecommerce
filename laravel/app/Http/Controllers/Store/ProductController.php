@@ -8,6 +8,7 @@ use App\Models\UserSearchLog;
 use App\Services\ProductRecommendationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -64,5 +65,7 @@ class ProductController extends Controller
             'category_filter' => $search,
             'created_at' => now(),
         ]);
+
+        Cache::forget("recommendations:user:{$request->user()->id}");
     }
 }
