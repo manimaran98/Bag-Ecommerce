@@ -8,7 +8,9 @@ use App\Services\Chat\GeminiChatProvider;
 use App\Services\Chat\GroqChatProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use App\Auth\Sha256FallbackUserProvider;
 use App\Hashing\Sha256Hasher;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
@@ -42,8 +44,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Hash::extend('sha256', function (array $config = []): Sha256Hasher {
-            return new Sha256Hasher;
+        // Register legacy sha256 driver for completeness (still used by Sha256FallbackUserProvider).
+        Hash::extend('sha256', fn (array $config = []): Sha256Hasher => new Sha256Hasher);
+
+        // Custom user provider: verifies bcrypt normally, falls back to sha256 for
+        // legacy accounts and rehashes them to bcrypt on first successful login.
+        Auth::provider('sha256-fallback', function ($app, array $config): Sha256FallbackUserProvider {
+            return new Sha256FallbackUserProvider($app['hash'], $config['model']);
         });
 
         Paginator::useBootstrapFive();

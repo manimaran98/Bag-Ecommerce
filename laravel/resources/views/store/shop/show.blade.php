@@ -21,14 +21,21 @@
                             <p class="small text-muted mb-4">{{ $product->stock_description }}</p>
 
                             @if ($product->stock_quantity > 0)
-                                <form method="post" action="{{ route('cart.add', $product->stock_id) }}">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label class="form-label" for="quantity">Quantity</label>
-                                        <input class="form-control" type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-danger w-100">Add to cart</button>
-                                </form>
+                                @auth
+                                    <form method="post" action="{{ route('cart.add', $product->stock_id) }}">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label class="form-label" for="quantity">Quantity</label>
+                                            <input class="form-control" type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger w-100">Add to cart</button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn btn-danger w-100">Login to purchase</a>
+                                    <p class="small text-muted text-center mt-2">
+                                        Don't have an account? <a href="{{ route('register') }}">Sign up</a>
+                                    </p>
+                                @endauth
                             @else
                                 <p class="text-danger fw-semibold">Currently unavailable.</p>
                             @endif

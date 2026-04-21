@@ -12,7 +12,7 @@ final class DeliveryController extends Controller
 {
     public function index(): View
     {
-        $deliveries = Delivery::query()->with('user')->orderByDesc('delivery_id')->get();
+        $deliveries = Delivery::query()->with('user')->orderByDesc('delivery_id')->paginate(25);
 
         return view('admin.deliveries.index', compact('deliveries'));
     }
@@ -26,7 +26,7 @@ final class DeliveryController extends Controller
     {
         $data = $request->validate([
             'id' => ['required', 'integer', 'exists:users,id'],
-            'purchase_id' => ['required', 'string', 'max:100'],
+            'purchase_id' => ['required', 'string', 'max:100', 'exists:purchase,purchase_id'],
             'delivery_agent' => ['required', 'string', 'max:100'],
             'delivery_status' => ['required', 'string', 'max:100'],
             'address' => ['required', 'string', 'max:100'],

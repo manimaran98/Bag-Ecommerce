@@ -32,4 +32,9 @@
         </tbody>
     </table>
 </div>
+@if ($users->hasPages())
+<div class="mt-3 d-flex justify-content-center">
+    {{ $users->links() }}
+</div>
+@endif
 @endsection

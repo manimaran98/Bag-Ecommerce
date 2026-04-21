@@ -9,11 +9,13 @@ return [
     | Default Hash Driver
     |--------------------------------------------------------------------------
     |
-    | This application uses salted SHA-256 (random 32-byte salt per password).
+    | Uses bcrypt for all new passwords. Legacy sha256 hashes are verified and
+    | transparently upgraded to bcrypt on first successful login via
+    | App\Auth\Sha256FallbackUserProvider.
     |
     */
 
-    'driver' => env('HASH_DRIVER', 'sha256'),
+    'driver' => env('HASH_DRIVER', 'bcrypt'),
 
     'bcrypt' => [
         'rounds' => env('BCRYPT_ROUNDS', 12),

@@ -39,4 +39,9 @@
         </tbody>
     </table>
 </div>
+@if ($purchases->hasPages())
+<div class="mt-3 d-flex justify-content-center">
+    {{ $purchases->links() }}
+</div>
+@endif
 @endsection

@@ -7,7 +7,8 @@ namespace App\Hashing;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 
 /**
- * Stores passwords as SHA-256(salt || password) with a random 32-byte salt per password.
+ * Legacy SHA-256 hasher kept only for verifying old hashes during transparent rehash-to-bcrypt.
+ * New passwords are never hashed with this driver — the default driver is bcrypt.
  * Format: s256$<64 hex salt>$<64 hex digest>
  */
 final class Sha256Hasher implements HasherContract
@@ -48,8 +49,9 @@ final class Sha256Hasher implements HasherContract
         return hash_equals(hash('sha256', $salt.$value), $m[2]);
     }
 
-    public function needsRehash(string $hashedValue): bool
+    public function needsRehash(string $hashedValue, array $options = []): bool
     {
-        return false;
+        // Any sha256 hash should be upgraded to bcrypt on next successful login.
+        return str_starts_with($hashedValue, self::PREFIX);
     }
 }

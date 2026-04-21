@@ -124,20 +124,25 @@ final class StripeCheckoutService
         $piId = is_string($pi) ? $pi : (is_object($pi) && isset($pi->id) ? (string) $pi->id : '');
 
         $itemDate = now()->format('Y-m-d');
-        $ok = $this->orders->completeFromCart(
-            $user,
-            $paymentId,
-            $orderTotal,
-            $itemDate,
-            'Approved',
-            null,
-            $sessionId,
-            $piId
-        );
+        try {
+            $ok = $this->orders->completeFromCart(
+                $user,
+                $paymentId,
+                $orderTotal,
+                $itemDate,
+                'Approved',
+                null,
+                $sessionId,
+                $piId
+            );
+        } catch (\RuntimeException $e) {
+            return redirect()->route('cart.index')
+                ->with('error', 'One or more items sold out before your order completed. Your payment will be refunded — contact support with payment ID: '.$paymentId);
+        }
 
         if (! $ok) {
             return redirect()->route('cart.index')
-                ->with('error', 'Could not save your order. Contact support with your payment ID.');
+                ->with('error', 'Could not save your order. Contact support with your payment ID: '.$paymentId);
         }
 
         return redirect()->route('orders.index', ['paid' => 1]);

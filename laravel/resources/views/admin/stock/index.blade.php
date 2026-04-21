@@ -35,4 +35,9 @@
         </tbody>
     </table>
 </div>
+@if ($stocks->hasPages())
+<div class="mt-3 d-flex justify-content-center">
+    {{ $stocks->links() }}
+</div>
+@endif
 @endsection

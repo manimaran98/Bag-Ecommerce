@@ -17,7 +17,7 @@ final class PurchaseController extends Controller
 
     public function index(): View
     {
-        $purchases = Purchase::query()->with('user')->orderByDesc('purchase_date')->get();
+        $purchases = Purchase::query()->with('user')->orderByDesc('purchase_date')->paginate(25);
 
         return view('admin.purchases.index', compact('purchases'));
     }

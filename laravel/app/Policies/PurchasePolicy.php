@@ -9,6 +9,6 @@ class PurchasePolicy
 {
     public function view(User $user, Purchase $purchase): bool
     {
-        return (int) $purchase->id === (int) $user->id;
+        return $user->isAdmin() || (int) $purchase->id === (int) $user->id;
     }
 }

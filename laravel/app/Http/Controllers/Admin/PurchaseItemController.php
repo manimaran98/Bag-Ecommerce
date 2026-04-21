@@ -18,9 +18,9 @@ final class PurchaseItemController extends Controller
     public function update(Request $request, PurchaseItem $purchase_item): RedirectResponse
     {
         $data = $request->validate([
-            'purchase_id' => ['required', 'string', 'max:100'],
+            'purchase_id' => ['required', 'string', 'max:100', 'exists:purchase,purchase_id'],
             'id' => ['required', 'integer', 'exists:users,id'],
-            'stock_id' => ['required', 'integer'],
+            'stock_id' => ['required', 'integer', 'exists:stock_inventory,stock_id'],
             'stock_name' => ['required', 'string', 'max:100'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'stock_price' => ['required', 'string', 'max:100'],
@@ -30,13 +30,13 @@ final class PurchaseItemController extends Controller
         $purchase_item->fill($data);
         $purchase_item->save();
 
-        return redirect()->route('admin.dashboard')->with('status', 'Purchase line updated.');
+        return redirect()->route('admin.purchases.index')->with('status', 'Purchase line updated.');
     }
 
     public function destroy(PurchaseItem $purchase_item): RedirectResponse
     {
         $purchase_item->delete();
 
-        return redirect()->route('admin.dashboard')->with('status', 'Purchase line deleted.');
+        return redirect()->route('admin.purchases.index')->with('status', 'Purchase line deleted.');
     }
 }

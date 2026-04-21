@@ -81,7 +81,8 @@ final class AiChatService
             return $this->friendlyFailure($r);
         }
 
-        $r2 = $this->gemini->complete($system, $messages);
+        // Fall back to Groq instead of retrying Gemini with the same error.
+        $r2 = $this->groq->complete($system, $messages);
         if ($r2->ok) {
             return $r2;
         }

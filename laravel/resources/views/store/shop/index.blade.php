@@ -41,6 +41,12 @@
         @endforelse
     </div>
 
+    @if ($products->hasPages())
+        <div class="d-flex justify-content-center mt-4">
+            {{ $products->links() }}
+        </div>
+    @endif
+
     @include('store.partials.recommended-products', ['recommended' => $recommended ?? collect()])
 </div>
 @endsection

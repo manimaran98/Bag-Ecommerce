@@ -32,7 +32,7 @@ class ProductController extends Controller
         }
 
         return view('store.shop.index', [
-            'products' => $q->orderBy('stock_id')->get(),
+            'products' => $q->orderBy('stock_id')->paginate(12)->withQueryString(),
             'search' => is_string($search) ? $search : null,
             'recommended' => $recommended,
         ]);

@@ -17,7 +17,7 @@ final class StockController extends Controller
 
     public function index(): View
     {
-        $stocks = StockInventory::query()->orderBy('stock_id')->get();
+        $stocks = StockInventory::query()->orderBy('stock_id')->paginate(25);
 
         return view('admin.stock.index', compact('stocks'));
     }

@@ -68,11 +68,12 @@ final class OrderCompletionService
                 ]);
 
                 $stock = StockInventory::query()->where('stock_id', $stockId)->lockForUpdate()->first();
-                if ($stock) {
-                    $newQty = max(0, (int) $stock->stock_quantity - $qty);
-                    $stock->stock_quantity = $newQty;
-                    $stock->save();
+                if (! $stock || (int) $stock->stock_quantity < $qty) {
+                    // Abort the transaction — stock ran out between cart add and checkout.
+                    throw new \RuntimeException("Insufficient stock for item #{$stockId}.");
                 }
+                $stock->stock_quantity = (int) $stock->stock_quantity - $qty;
+                $stock->save();
             }
 
             $address = (string) ($user->address ?? '');

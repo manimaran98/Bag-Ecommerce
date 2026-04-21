@@ -33,16 +33,19 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::post('/chat', [ChatController::class, 'message'])
-    ->middleware(['throttle:chat', 'captcha'])
+    ->middleware(['auth', 'throttle:chat', 'captcha'])
     ->name('chat.message');
 
 Route::post('/support-requests', [SupportRequestController::class, 'store'])
     ->middleware(['throttle:support', 'captcha'])
     ->name('support-requests.store');
 
+// Public — guests can browse without logging in
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{stock}', [ProductController::class, 'show'])->whereNumber('stock')->name('products.show');
+
+// Auth required — cart, checkout, orders, receipts
 Route::middleware('auth')->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/{stock}', [ProductController::class, 'show'])->whereNumber('stock')->name('products.show');
     Route::post('/cart/add/{stock}', [CartController::class, 'store'])->whereNumber('stock')->name('cart.add');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/remove/{item}', [CartController::class, 'destroy'])->where('item', '[0-9]+')->name('cart.remove');

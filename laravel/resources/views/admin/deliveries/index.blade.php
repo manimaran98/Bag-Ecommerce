@@ -41,4 +41,9 @@
         </tbody>
     </table>
 </div>
+@if ($deliveries->hasPages())
+<div class="mt-3 d-flex justify-content-center">
+    {{ $deliveries->links() }}
+</div>
+@endif
 @endsection
